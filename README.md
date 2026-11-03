@@ -117,7 +117,7 @@ python main.py
 O pipeline realizará o processamento dos dados e salvará o resultado no diretório:
 
 ```text
-output/relatorio-pedidos/
+output/relatorio_pedidos/
 ```
 
 O resultado é gerado em formato Parquet.

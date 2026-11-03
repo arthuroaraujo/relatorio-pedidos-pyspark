@@ -104,7 +104,32 @@ Instale as dependências:
 pip install -r requirements.txt
 ```
 
-Configure o Java e as variáveis de ambiente necessárias para execução do Spark, conforme as instruções do ambiente utilizado.
+### Configuração adicional para Windows
+
+Em algumas instalações do PySpark no Windows, é necessário configurar os binários nativos do Hadoop para que o Apache Spark funcione corretamente.
+
+1. Disponibilize os arquivos `winutils.exe` e `hadoop.dll` compatíveis com a versão do Hadoop utilizada pelo PySpark.
+2. Organize os arquivos na seguinte estrutura:
+
+```text
+C:\hadoop\
+└── bin\
+    ├── winutils.exe
+    └── hadoop.dll
+```
+
+3. Configure as variáveis de ambiente no PowerShell:
+
+```powershell
+$env:HADOOP_HOME = "C:\hadoop"
+$env:PATH += ";C:\hadoop\bin"
+```
+
+Essas configurações são válidas para a sessão atual do terminal. Caso necessário, configure as variáveis permanentemente no Windows.
+
+> **Observação:** os binários nativos do Hadoop devem ser compatíveis com a versão utilizada pelo PySpark. A ausência ou incompatibilidade desses arquivos pode causar erros durante a execução do Spark no Windows.
+
+Em ambientes Linux ou macOS, essa configuração específica de `winutils.exe` não é necessária.
 
 ## Execução
 

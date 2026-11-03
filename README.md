@@ -22,6 +22,7 @@ O relatório considera os seguintes critérios:
 - PySpark
 - Apache Spark
 - Java 17
+- Docker e Docker Compose
 - Pytest
 - Parquet
 - Git e GitHub
@@ -47,99 +48,66 @@ relatorio-pedidos-pyspark/
 ├── data/
 ├── output/
 ├── main.py
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md
 ```
 
-## Funcionamento do pipeline
-
-1. Inicialização da sessão Spark;
-2. Leitura dos pedidos e pagamentos utilizando schemas explícitos;
-3. Conversão e tratamento dos dados;
-4. Agrupamento dos itens e cálculo do valor total dos pedidos;
-5. Filtragem dos pagamentos recusados e considerados legítimos pela análise antifraude;
-6. Junção entre pedidos e pagamentos;
-7. Filtragem dos pedidos realizados em 2025;
-8. Seleção das colunas finais e ordenação;
-9. Escrita do relatório em formato Parquet.
-
 ## Configuração do ambiente
 
 ### Pré-requisitos
 
-- Python 3.11
-- Java 17
 - Git
+- Docker Desktop
 
-### Instalação
+**Não é necessário instalar Python, Java, PySpark ou configurar Hadoop/Winutils localmente para executar o pipeline via Docker.**
 
-Clone o repositório:
+### Clonar o repositório
 
 ```bash
 git clone https://github.com/arthuroaraujo/relatorio-pedidos-pyspark.git
-```
-
-Entre na pasta:
-
-```bash
 cd relatorio-pedidos-pyspark
 ```
 
-Crie o ambiente virtual:
+### Preparar os dados
 
-```bash
-py -3.11 -m venv .venv
-```
-
-Ative o ambiente virtual no Windows:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Instale as dependências:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Configuração adicional para Windows
-
-Em algumas instalações do PySpark no Windows, é necessário configurar os binários nativos do Hadoop para que o Apache Spark funcione corretamente.
-
-1. Disponibilize os arquivos `winutils.exe` e `hadoop.dll` compatíveis com a versão do Hadoop utilizada pelo PySpark.
-2. Organize os arquivos na seguinte estrutura:
+Disponibilize os datasets nas seguintes pastas:
 
 ```text
-C:\hadoop\
-└── bin\
-    ├── winutils.exe
-    └── hadoop.dll
+data/
+├── pedidos/
+└── pagamentos/
 ```
 
-3. Configure as variáveis de ambiente no PowerShell:
+Os arquivos devem estar organizados conforme os caminhos definidos em `settings.py`.
 
-```powershell
-$env:HADOOP_HOME = "C:\hadoop"
-$env:PATH += ";C:\hadoop\bin"
-```
+## Execução via Docker
 
-Essas configurações são válidas para a sessão atual do terminal. Caso necessário, configure as variáveis permanentemente no Windows.
-
-> **Observação:** os binários nativos do Hadoop devem ser compatíveis com a versão utilizada pelo PySpark. A ausência ou incompatibilidade desses arquivos pode causar erros durante a execução do Spark no Windows.
-
-Em ambientes Linux ou macOS, essa configuração específica de `winutils.exe` não é necessária.
-
-## Execução
-
-Com o ambiente configurado e os arquivos de entrada disponíveis nos caminhos definidos em `settings.py`, execute:
+Com o Docker Desktop iniciado e os datasets disponíveis, execute:
 
 ```bash
-python main.py
+docker compose up --build
 ```
 
-O pipeline realizará o processamento dos dados e salvará o resultado no diretório:
+O Docker será responsável por:
+
+1. Construir a imagem com Python 3.11;
+2. Instalar Java 17;
+3. Instalar as dependências Python;
+4. Configurar o ambiente de execução do Spark;
+5. Executar o pipeline de processamento.
+
+Os diretórios locais são compartilhados com o container por meio de volumes:
+
+- `./data:/app/data`: disponibiliza os datasets;
+- `./output:/app/output`: permite persistir os resultados localmente.
+
+### Resultado
+
+Após a execução, o relatório estará disponível em:
 
 ```text
 output/relatorio_pedidos/
@@ -147,15 +115,13 @@ output/relatorio_pedidos/
 
 O resultado é gerado em formato Parquet.
 
-## Testes
+## Execução dos testes
 
-Para executar os testes unitários:
+Para executar os testes unitários localmente, é necessário ter Python 3.11 e as dependências instaladas.
 
 ```bash
 python -m pytest
 ```
-
-Os testes verificam a lógica de negócio implementada no processamento dos pedidos e pagamentos.
 
 ## Resultado do processamento
 
@@ -194,13 +160,12 @@ O relatório Parquet contém as seguintes colunas:
 - Logging;
 - Testes unitários;
 - Processamento distribuído;
-- Persistência de dados em Parquet.
+- Persistência de dados em Parquet;
+- Containerização com Docker.
 
 ## Autor
 
 **Arthur Araújo**
-
-Desenvolvedor de Software | Data Engineering
 
 GitHub: [arthuroaraujo](https://github.com/arthuroaraujo)
 

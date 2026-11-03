@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: relatorio-pedidos-pyspark
+Version: 1.0.0
+Summary: Relatorio de pedidos recusados e legitimos usando PySpark
+Requires-Python: >=3.10
+Requires-Dist: pyspark==3.5.5

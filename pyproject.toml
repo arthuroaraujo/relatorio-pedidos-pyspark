@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "relatorio-pedidos-pyspark"
+version = "1.0.0"
+description = "Relatorio de pedidos recusados e legitimos usando PySpark"
+requires-python = ">=3.10"
+dependencies = ["pyspark==3.5.5"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

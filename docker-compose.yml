@@ -1,0 +1,9 @@
+
+services:
+  relatorio-pedidos:
+    build: .
+    container_name: relatorio-pedidos
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    restart: "no"
